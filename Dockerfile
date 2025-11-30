@@ -1,5 +1,5 @@
 # ❌ VULNERABILIDADE 1: Usar imagem base desatualizada e com root
-FROM node:14
+FROM node:20-slim 
 
 # ❌ VULNERABILIDADE 2: Rodar como root (usuário padrão)
 # Sem criar usuário não-privilegiado
