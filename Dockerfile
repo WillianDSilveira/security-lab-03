@@ -1,30 +1,30 @@
-# ✅ MITIGAÇÃO 1: Imagem base atualizada e slim
-FROM node:20-slim 
+# ❌ VULNERABILIDADE 1: Usar imagem base desatualizada e com root
+FROM node:14
 
-# Definição do diretório de trabalho: alinhado com a estrutura do projeto.
+# ❌ VULNERABILIDADE 2: Rodar como root (usuário padrão)
+# Sem criar usuário não-privilegiado
+
+# ❌ VULNERABILIDADE 3: Expor informações no build
+LABEL maintainer="admin@example.com"
+LABEL version="1.0"
+
+# ❌ VULNERABILIDADE 4: Copiar tudo sem .dockerignore
 WORKDIR /app
+COPY . .
 
-# ✅ MITIGAÇÃO 7: Instala SOMENTE ferramentas de build necessárias
-# Adiciona as ferramentas essenciais para compilação de dependências nativas (se houver).
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    python3 \
-    make \
-    g++ && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copiar os arquivos package.json e package-lock.json (da pasta local 'app/' para o WORKDIR)
-COPY app/package*.json ./
-
-# ✅ MITIGAÇÃO 2 & 5: Rodar 'npm install' como usuário não-root ('node')
-USER node 
-
-# Instalar dependências do Node.js
+# ❌ VULNERABILIDADE 5: Instalar dependências como root
 RUN npm install
 
-# Copiar o restante da aplicação (da pasta local 'app/' para o WORKDIR)
-COPY app/. .
+# ❌ VULNERABILIDADE 6: Expor porta privilegiada
+EXPOSE 80
 
-# ✅ MITIGAÇÃO 8: Rodar aplicação como usuário não-root ('node')
-# ❌ VULNERABILIDADE 6: Porta privilegiada 80 está em uso, mas corrigiremos isso depois.
-CMD [ "npm", "start" ]
+# ❌ VULNERABILIDADE 7: Não especificar versões, instalar pacotes desnecessários
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    vim \
+    net-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# ❌ VULNERABILIDADE 8: Rodar aplicação como root
+CMD ["npm", "start"]
