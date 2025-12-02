@@ -19,12 +19,12 @@ RUN npm install
 EXPOSE 80
 
 # ❌ VULNERABILIDADE 7: Não especificar versões, instalar pacotes desnecessários
-RUN apt-get update && apt-get install -y \
-    curl \
-    wget \
-    vim \
-    net-tools \
-    && rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && apt-get install -y \
+    #curl \
+    #wget \
+    #vim \
+    #net-tools \
+    #&& rm -rf /var/lib/apt/lists/*
 
 # ❌ VULNERABILIDADE 8: Rodar aplicação como root
 CMD ["npm", "start"]
